@@ -107,3 +107,4 @@ def classify_reviews():
 
 if __name__ == "__main__":
     classify_reviews()
+#We decided to start lab 8 because we don't have much time.
