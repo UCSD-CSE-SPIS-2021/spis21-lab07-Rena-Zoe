@@ -1,61 +1,51 @@
 
-import random
+#Part 2
+#step 2:
+import pandas as pd
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+from nltk.classify import NaiveBayesClassifier
+from nltk.corpus import stopwords
+from nltk.classify.util import accuracy
 
-#Step 2
+# "Stop words" that you might want to use in your project/an extension
+stop_words = set(stopwords.words('english'))
 
-#Niema's code from lecture
-#counts = dict()
-#for word in words:
-  #if word not in counts:
-   # counts[word] = 1
- # else:
-   # counts[word] += 1
-#print(counts)
+def format_sentence(sent):
+    ''' format the text setence as a bag of words for use in nltk'''
+    tokens = nltk.word_tokenize(sent)
+    return({word: True for word in tokens})
 
-s = "Yeah baby I like it like that You gotta believe me when I tell you I said I like it like that"
+def get_reviews(data, rating):
+    ''' Return the reviews from the rows in the data set with the
+        given rating '''
+    rows = data['Rating']==rating
+    return list(data.loc[rows, 'Review'])
 
-#s = "Rena is cool Nikki is cool Diego plays the guitar"
+#Trying to split up the data in a list based off of a number 0-1
+#So 0.25 will split around 1/4, 0.6 will split it around 1/2
+def split_train_test(data, train_prop):
+    ''' input: A list of data, train_prop is a number between 0 and 1
+              specifying the proportion of data in the training set.
+        output: A tuple of two lists, (training, testing)
+    '''
+    #The casting function int() and list slicing can make this function just one line:
+    #data[0:int(len(data)*train_prop)]
+    #Cast is changing the data type of the operation -> string of 1 in the int function, makes it an integer 1 - can multiply integers, but not strings
+    #data.slice(0, -1, int(train_prop))
+      #Train_prop is the 0-1 number
+    #Use the index of the list to correspond to the train proportion
 
-def train(s):
-  #We want the function to spit out what word happens after the previous one 
-    #So ex: after I this will be spit out: 'I': ['like', 'tell', 'said', 'like']
+    # TODO: You will write this function, and change the return value
+    return (data[0:int(len(data)*train_prop)], data[int(len(data)*train_prop):len(data)])
 
-  #Splitting the string stuff
-  #s.split()
-  words_list = s.split()
-   #This is a string which is the parameter
-    #Will automatically split the commas
+print(split_train_test(["A", "B", "C", "D"], 0.78))
+print(split_train_test(["A", "B", "C", "D"], 0.20))
+print(split_train_test(["A", "B", "C", "D"], 0.1))
+print(split_train_test(["A", "B", "C", "D"], 0.3))
+print(split_train_test(["A", "B", "C", "D"], 0.55))
+#Convert place you want to split the list into an integer
+#Passes through - you want to find corresponding index in the data, where the 0/25 cut off would be
 
-  #Made a dictionary for the words
-  next_words_dict = dict()
 
-  for index in range(len(words_list)-1):
-      #For the length of the list
-    #Goal is to have a list: there is a key and a list
-    word = words_list[index]
-    if word not in next_words_dict:
-      next_words_dict[word] = []
-    next_words_dict[word].append(words_list[index + 1])
-    #We want to add the word to the dictionary
-      #Adding the next words to the dictionary
-  return next_words_dict
-#print(train(s))
-  #Can change s to be whatever string we want
-
-#Step 3:
-
-def generate(model, first_word, num_words):
-#we want to use random generated strings from the nonzero probability list to create a sentence
-  #model – a dictionary representing the trained model as output from the train method
-  #first_word – the word to use as the first word in the generated text
-  #num_words – the number of words in the returned generated string
-  model = train(s)
-  while num_words != 0:
-    print(first_word)
-    next_word = random.choice(model[first_word])
-    num_words = num_words - 1
-    first_word = next_word
-      #Will print the next word instead of the first word because it's being updated and moving over + 1 
-
-generate(s, 'I', 5)
-#Michael helped us with this code ^
